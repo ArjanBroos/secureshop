@@ -1,0 +1,38 @@
+services:
+  postgres:
+    image: postgres:18.4
+    environment:
+      POSTGRES_DB: shop
+      POSTGRES_USER: shop
+      POSTGRES_PASSWORD: localdevpw
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  valkey:
+    image: valkey/valkey:9.1.0-alpine
+    ports:
+      - "6379:6379"
+
+  seq:
+    image: datalust/seq:2025.2
+    environment:
+      ACCEPT_EULA: Y
+    ports:
+      - "8081:80"
+    volumes:
+      - seq_data:/data
+
+  keycloak:
+    image: quay.io/keycloak/keycloak:26.6.2
+    command: start-dev
+    environment:
+      KC_BOOTSTRAP_ADMIN_USERNAME: admin
+      KC_BOOTSTRAP_ADMIN_PASSWORD: admin
+    ports:
+      - "8180:8080"
+
+volumes:
+  postgres_data:
+  seq_data:

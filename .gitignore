@@ -1,0 +1,31 @@
+# Secrets — never committed
+.env
+.env.local
+.env.*.local
+*.pem
+*.key
+secrets/
+
+# Java / Maven
+target/
+*.class
+*.jar
+*.war
+.mvn/wrapper/maven-wrapper.jar
+!.mvn/wrapper/maven-wrapper.properties
+
+# Node
+node_modules/
+dist/
+.vite/
+
+# IDE
+.idea/
+*.iml
+.vscode/
+!.vscode/settings.json
+!.vscode/extensions.json
+
+# OS
+.DS_Store
+Thumbs.db
