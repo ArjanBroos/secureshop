@@ -1,0 +1,102 @@
+name: Deploy
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  build-push:
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - uses: actions/checkout@v6
+
+      - uses: docker/login-action@v4
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build and push backend image
+        uses: docker/build-push-action@v7
+        with:
+          context: ./backend
+          push: true
+          tags: |
+            ghcr.io/${{ github.repository_owner }}/secureshop-backend:${{ github.sha }}
+            ghcr.io/${{ github.repository_owner }}/secureshop-backend:latest
+
+      - name: Build and push frontend image
+        uses: docker/build-push-action@v7
+        with:
+          context: ./frontend
+          push: true
+          tags: |
+            ghcr.io/${{ github.repository_owner }}/secureshop-frontend:${{ github.sha }}
+            ghcr.io/${{ github.repository_owner }}/secureshop-frontend:latest
+
+  deploy-staging:
+    runs-on: ubuntu-24.04
+    needs: build-push
+    environment: staging
+    steps:
+      - name: Fetch staging secrets from Infisical
+        uses: Infisical/secrets-action@v1.0.12
+        with:
+          client-id: ${{ secrets.INFISICAL_CLIENT_ID }}
+          client-secret: ${{ secrets.INFISICAL_CLIENT_SECRET }}
+          project-slug: ${{ secrets.INFISICAL_PROJECT_SLUG }}
+          env-slug: staging
+
+      - name: Deploy backend to staging
+        run: curl -sf -X POST "${{ secrets.RENDER_STAGING_BACKEND_DEPLOY_HOOK }}"
+
+      - name: Deploy frontend to staging
+        run: curl -sf -X POST "${{ secrets.RENDER_STAGING_FRONTEND_DEPLOY_HOOK }}"
+
+      - name: Wait for staging to be healthy
+        run: |
+          for i in $(seq 1 30); do
+            if curl -sf "${{ secrets.STAGING_URL }}/actuator/health" | grep -q '"status":"UP"'; then
+              echo "Staging is healthy"
+              exit 0
+            fi
+            echo "Attempt $i/30 — retrying in 10s..."
+            sleep 10
+          done
+          echo "Staging health check timed out after 5 minutes"
+          exit 1
+
+  deploy-production:
+    runs-on: ubuntu-24.04
+    needs: deploy-staging
+    environment: production
+    steps:
+      - name: Fetch production secrets from Infisical
+        uses: Infisical/secrets-action@v1.0.12
+        with:
+          client-id: ${{ secrets.INFISICAL_CLIENT_ID }}
+          client-secret: ${{ secrets.INFISICAL_CLIENT_SECRET }}
+          project-slug: ${{ secrets.INFISICAL_PROJECT_SLUG }}
+          env-slug: prod
+
+      - name: Deploy backend to production
+        run: curl -sf -X POST "${{ secrets.RENDER_PROD_BACKEND_DEPLOY_HOOK }}"
+
+      - name: Deploy frontend to production
+        run: curl -sf -X POST "${{ secrets.RENDER_PROD_FRONTEND_DEPLOY_HOOK }}"
+
+      - name: Wait for production to be healthy
+        run: |
+          for i in $(seq 1 30); do
+            if curl -sf "${{ secrets.PROD_URL }}/actuator/health" | grep -q '"status":"UP"'; then
+              echo "Production is healthy"
+              exit 0
+            fi
+            echo "Attempt $i/30 — retrying in 10s..."
+            sleep 10
+          done
+          echo "Production health check timed out after 5 minutes"
+          exit 1
