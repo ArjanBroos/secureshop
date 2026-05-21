@@ -10,7 +10,7 @@
 
   "features": {
     "ghcr.io/devcontainers/features/java:1": { "version": "25", "installMaven": "true" },
-    "ghcr.io/devcontainers/features/node:1": { "version": "20" },
+    "ghcr.io/devcontainers/features/node:1": { "version": "24.15.0" },
     "ghcr.io/devcontainers/features/docker-in-docker:2": { "moby": false }
   },
 
@@ -45,5 +45,5 @@
     }
   },
 
-  "postCreateCommand": "sudo chown -R vscode:vscode /home/vscode/.npm /home/vscode/.m2; [ -f frontend/package.json ] && (cd frontend && npm ci); [ -f backend/mvnw ] && (cd backend && ./mvnw dependency:resolve); true"
+  "postCreateCommand": "sudo chown -R vscode:vscode /home/vscode/.npm /home/vscode/.m2 && cd frontend && npm ci && cd /workspace/backend && ./mvnw dependency:resolve"
 }

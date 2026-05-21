@@ -1,0 +1,30 @@
+main {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  gap: 1rem;
+  font-family: sans-serif;
+}
+
+.status {
+  font-size: 0.9rem;
+  padding: 4px 12px;
+  border-radius: 4px;
+}
+
+.status--loading {
+  color: #666;
+}
+
+.status--up {
+  color: #166534;
+  background: #dcfce7;
+}
+
+.status--down,
+.status--error {
+  color: #991b1b;
+  background: #fee2e2;
+}
