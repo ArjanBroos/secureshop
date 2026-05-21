@@ -31,14 +31,25 @@ jobs:
             ${{ env.IMAGE_PREFIX }}/secureshop-backend:${{ github.sha }}
             ${{ env.IMAGE_PREFIX }}/secureshop-backend:latest
 
-      - name: Build and push frontend image
+      - name: Build and push frontend staging image
         uses: docker/build-push-action@v7
         with:
           context: ./frontend
           push: true
+          build-args: VITE_API_URL=${{ secrets.STAGING_URL }}
           tags: |
-            ${{ env.IMAGE_PREFIX }}/secureshop-frontend:${{ github.sha }}
-            ${{ env.IMAGE_PREFIX }}/secureshop-frontend:latest
+            ${{ env.IMAGE_PREFIX }}/secureshop-frontend-staging:${{ github.sha }}
+            ${{ env.IMAGE_PREFIX }}/secureshop-frontend-staging:latest
+
+      - name: Build and push frontend production image
+        uses: docker/build-push-action@v7
+        with:
+          context: ./frontend
+          push: true
+          build-args: VITE_API_URL=${{ secrets.PROD_URL }}
+          tags: |
+            ${{ env.IMAGE_PREFIX }}/secureshop-frontend-prod:${{ github.sha }}
+            ${{ env.IMAGE_PREFIX }}/secureshop-frontend-prod:latest
 
   deploy-staging:
     runs-on: ubuntu-24.04

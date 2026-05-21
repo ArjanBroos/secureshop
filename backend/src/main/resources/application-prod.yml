@@ -2,3 +2,7 @@ logging:
   level:
     root: WARN
     com.secureshop: INFO
+
+app:
+  cors:
+    allowed-origins: "https://secureshop-frontend-prod.onrender.com"

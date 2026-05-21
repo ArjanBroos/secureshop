@@ -1,3 +1,7 @@
 logging:
   level:
     root: INFO
+
+app:
+  cors:
+    allowed-origins: "https://secureshop-frontend-staging.onrender.com"
