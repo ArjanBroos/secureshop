@@ -1,24 +1,22 @@
 import { useEffect, useState } from "react";
+import { fetchHealth, type HealthStatus } from "./api/health";
 import "./App.css";
 
-type HealthStatus = "loading" | "UP" | "DOWN" | "error";
+type DisplayStatus = HealthStatus | "loading" | "error";
 
 function App() {
-  const [health, setHealth] = useState<HealthStatus>("loading");
+  const [health, setHealth] = useState<DisplayStatus>("loading");
 
   useEffect(() => {
-    fetch("/actuator/health")
-      .then((res) => res.json())
-      .then((data) => setHealth(data.status === "UP" ? "UP" : "DOWN"))
+    fetchHealth()
+      .then(setHealth)
       .catch(() => setHealth("error"));
   }, []);
 
   return (
     <main>
       <h1>Shop coming soon</h1>
-      <p className={`status status--${health.toLowerCase()}`}>
-        Backend: {health}
-      </p>
+      <p className={`status status--${health.toLowerCase()}`}>Backend: {health}</p>
     </main>
   );
 }
