@@ -33,17 +33,16 @@ export default defineConfig([
       ],
     },
     rules: {
-      'boundaries/element-types': ['error', {
+      'boundaries/dependencies': ['error', {
         default: 'disallow',
         rules: [
-          { from: 'domain',   allow: [] },
-          { from: 'api',      allow: ['domain'] },
-          { from: 'shared',   allow: [] },
-          { from: 'features', allow: ['domain', 'api', 'shared'] },
-          { from: 'app',      allow: ['domain', 'api', 'shared', 'features'] },
+          { from: { type: 'domain' },   allow: [] },
+          { from: { type: 'api' },      allow: [{ to: { type: 'domain' } }] },
+          { from: { type: 'shared' },   allow: [] },
+          { from: { type: 'features' }, allow: [{ to: { type: 'domain' } }, { to: { type: 'api' } }, { to: { type: 'shared' } }] },
+          { from: { type: 'app' },      allow: [{ to: { type: 'domain' } }, { to: { type: 'api' } }, { to: { type: 'shared' } }, { to: { type: 'features' } }] },
         ],
       }],
-      'boundaries/no-unknown': 'error',
     },
   },
 ])
