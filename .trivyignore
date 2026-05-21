@@ -1,0 +1,8 @@
+# pebble is a process supervisor bundled with eclipse-temurin JRE images,
+# compiled with Go 1.26.2. These CVEs are fixed in Go 1.26.3. Suppressed
+# until Adoptium ships an updated JRE image with pebble rebuilt.
+CVE-2026-33811
+CVE-2026-33814
+CVE-2026-39820
+CVE-2026-39836
+CVE-2026-42499

@@ -79,7 +79,7 @@ jobs:
             | tar xz -C /tmp trivy
 
       - name: Scan backend image
-        run: /tmp/trivy image --exit-code 1 --severity HIGH,CRITICAL backend:ci
+        run: /tmp/trivy image --exit-code 1 --severity HIGH,CRITICAL --ignorefile .trivyignore backend:ci
 
       - name: Scan frontend image
-        run: /tmp/trivy image --exit-code 1 --severity HIGH,CRITICAL frontend:ci
+        run: /tmp/trivy image --exit-code 1 --severity HIGH,CRITICAL --ignorefile .trivyignore frontend:ci
