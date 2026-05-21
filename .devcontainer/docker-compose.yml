@@ -4,8 +4,6 @@ services:
     privileged: true
     volumes:
       - ..:/workspace:cached
-      # Claude Code state — persists conversation history across container rebuilds
-      - ${HOME}/.claude:/home/vscode/.claude:cached
       # Build caches — avoids re-downloading on every rebuild
       - maven_cache:/home/vscode/.m2
       - npm_cache:/home/vscode/.npm

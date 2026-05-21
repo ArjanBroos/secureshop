@@ -4,6 +4,10 @@
   "service": "devcontainer",
   "workspaceFolder": "/workspace",
 
+  "mounts": [
+    "source=${localEnv:HOME}/.claude,target=/home/vscode/.claude,type=bind,consistency=cached"
+  ],
+
   "features": {
     "ghcr.io/devcontainers/features/java:1": { "version": "25", "installMaven": "true" },
     "ghcr.io/devcontainers/features/node:1": { "version": "20" },
