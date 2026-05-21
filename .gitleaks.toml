@@ -1,0 +1,8 @@
+[extend]
+useDefault = true
+
+[allowlist]
+description = "Known safe development values"
+regexes = [
+  "localdevpw",
+]

@@ -1,0 +1,15 @@
+{
+  "private": true,
+  "scripts": {
+    "prepare": "husky"
+  },
+  "devDependencies": {
+    "husky": "9.1.6",
+    "lint-staged": "15.5.2",
+    "prettier": "3.8.3"
+  },
+  "lint-staged": {
+    "backend/src/**/*.java": "bash -c 'cd /workspace/backend && ./mvnw spotless:apply -q'",
+    "frontend/src/**/*.{ts,tsx,css,json}": "prettier --write"
+  }
+}
