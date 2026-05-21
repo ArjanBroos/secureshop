@@ -22,6 +22,7 @@ frontend. No database yet — added in Slice 1.
 | Feature flags   | Flagsmith                   | not yet set up (Slice 5) |
 
 See [ADR-001](decisions/001-use-valkey-over-redis.md) for why Valkey instead of Redis.
+See [ADR-002](decisions/002-separate-frontend-images-per-environment.md) for why the frontend has separate images per environment.
 
 ## Backend structure
 
