@@ -3,11 +3,12 @@ package com.secureshop.architecture;
 import static com.tngtech.archunit.lang.syntax.ArchRuleDefinition.classes;
 import static com.tngtech.archunit.lang.syntax.ArchRuleDefinition.noClasses;
 
+import com.tngtech.archunit.core.importer.ImportOption;
 import com.tngtech.archunit.junit.AnalyzeClasses;
 import com.tngtech.archunit.junit.ArchTest;
 import com.tngtech.archunit.lang.ArchRule;
 
-@AnalyzeClasses(packages = "com.secureshop")
+@AnalyzeClasses(packages = "com.secureshop", importOptions = ImportOption.DoNotIncludeTests.class)
 class LayerDependencyTest {
 
     @ArchTest
