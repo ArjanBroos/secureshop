@@ -10,6 +10,7 @@
   },
   "lint-staged": {
     "backend/src/**/*.java": "bash -c 'cd /workspace/backend && ./mvnw spotless:apply -q'",
-    "frontend/src/**/*.{ts,tsx,css,json}": "prettier --write"
+    "frontend/src/**/*.{ts,tsx,css,json}": "prettier --write",
+    "frontend/src/**/*.{ts,tsx}": "eslint --fix"
   }
 }
