@@ -1,0 +1,19 @@
+{
+  "java.compile.nullAnalysis.mode": "disabled",
+  "java.configuration.updateBuildConfiguration": "interactive",
+
+  "java.format.enabled": false,
+  "[java]": {
+    "editor.formatOnSave": true,
+    "editor.defaultFormatter": "vscjava.vscode-java-pack"
+  },
+
+  "[typescript]": { "editor.formatOnSave": true, "editor.defaultFormatter": "esbenp.prettier-vscode" },
+  "[typescriptreact]": { "editor.formatOnSave": true, "editor.defaultFormatter": "esbenp.prettier-vscode" },
+  "[json]": { "editor.formatOnSave": true, "editor.defaultFormatter": "esbenp.prettier-vscode" },
+  "[css]": { "editor.formatOnSave": true, "editor.defaultFormatter": "esbenp.prettier-vscode" },
+
+  "editor.codeActionsOnSave": { "source.fixAll.eslint": "explicit" },
+  "files.trimTrailingWhitespace": true,
+  "files.insertFinalNewline": true
+}

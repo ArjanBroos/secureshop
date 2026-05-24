@@ -25,25 +25,7 @@
         "ms-playwright.playwright",
         "eamodio.gitlens",
         "anthropic.claude-code"
-      ],
-      "settings": {
-        // Java formatting — delegate to the Maven Spotless plugin
-        "java.format.enabled": false,
-        "[java]": {
-          "editor.formatOnSave": true,
-          "editor.defaultFormatter": "vscjava.vscode-java-pack"
-        },
-        // Frontend formatting — delegate to Prettier
-        "[typescript]":      { "editor.formatOnSave": true, "editor.defaultFormatter": "esbenp.prettier-vscode" },
-        "[typescriptreact]": { "editor.formatOnSave": true, "editor.defaultFormatter": "esbenp.prettier-vscode" },
-        "[json]":            { "editor.formatOnSave": true, "editor.defaultFormatter": "esbenp.prettier-vscode" },
-        "[css]":             { "editor.formatOnSave": true, "editor.defaultFormatter": "esbenp.prettier-vscode" },
-        // ESLint auto-fix on save (catches boundary violations immediately)
-        "editor.codeActionsOnSave": { "source.fixAll.eslint": "explicit" },
-        // Consistent settings
-        "files.trimTrailingWhitespace": true,
-        "files.insertFinalNewline": true
-      }
+      ]
     }
   },
 
