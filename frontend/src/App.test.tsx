@@ -1,32 +1,30 @@
 import { render, screen, waitFor } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 import App from "./App";
-import { fetchHealth } from "./api/health";
+import { getProducts } from "./api/products";
 
-vi.mock("./api/health");
+vi.mock("./api/products");
 
 describe("App", () => {
-  it("renders the coming soon heading", () => {
-    vi.mocked(fetchHealth).mockResolvedValue("UP");
+  it("renders the catalog page", async () => {
+    vi.mocked(getProducts).mockResolvedValue({
+      items: [
+        {
+          id: "1",
+          name: "Widget",
+          description: "A useful widget",
+          priceCents: 999,
+          currency: "EUR",
+          imageUrl: "https://example.com/widget.png",
+        },
+      ],
+      totalItems: 1,
+      page: 0,
+      size: 20,
+    });
 
     render(<App />);
 
-    expect(screen.getByText("Shop coming soon")).toBeInTheDocument();
-  });
-
-  it("shows UP status when backend is healthy", async () => {
-    vi.mocked(fetchHealth).mockResolvedValue("UP");
-
-    render(<App />);
-
-    await waitFor(() => expect(screen.getByText("Backend: UP")).toBeInTheDocument());
-  });
-
-  it("shows error status when backend is unreachable", async () => {
-    vi.mocked(fetchHealth).mockRejectedValue(new Error("Network error"));
-
-    render(<App />);
-
-    await waitFor(() => expect(screen.getByText("Backend: error")).toBeInTheDocument());
+    await waitFor(() => expect(screen.getByText("Products")).toBeInTheDocument());
   });
 });

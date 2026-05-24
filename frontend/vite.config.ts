@@ -7,6 +7,7 @@ export default defineConfig({
     host: "0.0.0.0",
     proxy: {
       "/actuator": "http://localhost:8080",
+      "/products": "http://localhost:8080",
     },
   },
   test: {
