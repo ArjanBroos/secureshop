@@ -83,6 +83,25 @@ jobs:
           echo "Staging health check timed out after 5 minutes"
           exit 1
 
+      - uses: actions/checkout@v6
+
+      - uses: actions/setup-node@v6
+        with:
+          node-version: '24'
+          cache: 'npm'
+          cache-dependency-path: frontend/package-lock.json
+
+      - name: Install frontend dependencies
+        run: cd frontend && npm ci
+
+      - name: Install Playwright browsers
+        run: cd frontend && npx playwright install chromium --with-deps
+
+      - name: Run smoke tests against staging
+        run: cd frontend && npm run test:e2e:smoke
+        env:
+          BASE_URL: ${{ secrets.STAGING_FRONTEND_URL }}
+
   deploy-production:
     runs-on: ubuntu-24.04
     needs: deploy-staging
