@@ -3,6 +3,8 @@ logging:
     root: INFO
 
 spring:
+  datasource:
+    url: ${SPRING_DATASOURCE_URL}
   flyway:
     locations: classpath:db/migration,classpath:db/seed
 
