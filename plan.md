@@ -437,7 +437,7 @@ Both of these run as part of the normal CI pipeline — ArchUnit runs with `./mv
 - **API layer tests:** Every function in `frontend/src/api/` gets Vitest tests with `fetch` mocked. Verify that backend DTO formats (snake_case, nested objects, etc.) map correctly to frontend domain types. Verify error handling (non-200 responses throw, network errors are caught). These are the tests that catch silent breakage when the backend changes a field name.
 - **Component tests:** Each feature's main page component gets at least two React Testing Library tests: one for the happy path (data loads, user sees the right content) and one for the error state (API fails, user sees a meaningful message). Mock at the `api/` boundary, not at `fetch`. Test user-visible behaviour, not implementation details — no snapshot tests, no asserting on CSS classes or internal state.
 - **Hook tests:** Only for hooks with meaningful logic (pagination, debounced search, complex form state). Use `renderHook` from React Testing Library. Simple hooks that just wrap a single API call are tested through the component instead.
-- **E2E tests (Playwright):** Added in Slice 6 and expanded from there. Not expected in earlier slices. Tagged `@smoke` tests run in the deploy pipeline.
+- **E2E tests (Playwright):** Added in Slice 2 and expanded with each new feature slice. Tagged `@smoke` tests run in the deploy pipeline after staging deploy.
 
 When a slice says "Tests:" below, it lists both backend and frontend expectations explicitly.
 
@@ -493,7 +493,28 @@ When a slice says "Tests:" below, it lists both backend and frontend expectation
 - Frontend API mapping is tested — a backend field rename will break a test, not production
 - Database migration runs via Flyway on deploy
 
-### Slice 2 — Add to Cart
+### Slice 2 — E2E Tests and Smoke Tests
+
+**Set up Playwright and write the first end-to-end tests, run against the live staging environment in the deploy pipeline.**
+
+**Playwright setup:**
+- Install Playwright in `frontend/e2e/`
+- Configure it to run against a configurable base URL via environment variable
+- Add a `test:e2e` script to `frontend/package.json`
+- In `deploy.yml`: after the staging health check, add a step that runs `@smoke`-tagged Playwright tests against the staging URL — staging must pass E2E before production promotion
+
+**Tests:**
+- Browse the catalog page — products load, names are visible (`@smoke`)
+- (Seed data required in staging: at least one product in the database)
+
+**What you prove:**
+- Playwright is wired up and runs against the real staging environment after every deploy
+- You have automated confidence that the catalog works end-to-end before production promotion
+- Smoke tests are fast (under 2 minutes) and reliable
+
+---
+
+### Slice 3 — Add to Cart
 
 **Domain:** `Cart`, `CartItem` (value objects, business rules like "quantity must be > 0", "can't add same product twice")
 **Application:** `ManageCartUseCase` — add item, remove item, view cart
@@ -512,7 +533,7 @@ When a slice says "Tests:" below, it lists both backend and frontend expectation
 - Domain logic with real business rules lives in `domain/`, tested without Spring (backend) and without React (frontend)
 - State management pattern in frontend is established
 
-### Slice 3 — Observability
+### Slice 4 — Observability
 
 **Backend:** Add OpenTelemetry SDK with tracing (Spring Web, JDBC, HTTP client instrumentation) and metrics, export to Grafana Cloud OTLP endpoint
 **Frontend:** Add basic error tracking (window.onerror → POST to a backend error endpoint, or use Sentry free tier)
@@ -529,7 +550,7 @@ When a slice says "Tests:" below, it lists both backend and frontend expectation
 - You can find a slow request and see exactly where the time was spent
 - Health checks actually reflect real readiness (not just "the JVM started")
 
-### Slice 4 — Authentication
+### Slice 5 — Authentication
 
 **Backend:** Integrate Keycloak as the identity provider. Spring Security validates JWTs from Keycloak. Protect write endpoints (cart, checkout). Leave catalog endpoints public.
 **Frontend:** Keycloak JS adapter for login/logout. Auth token attached to API requests via an interceptor in the `api/` client layer. Unauthenticated users can browse but not add to cart.
@@ -546,7 +567,7 @@ When a slice says "Tests:" below, it lists both backend and frontend expectation
 - Security headers are present on every response
 - CORS is properly configured per environment
 
-### Slice 5 — Checkout (with feature flag)
+### Slice 6 — Checkout (with feature flag)
 
 **Domain:** `Order`, `OrderItem`, `OrderStatus` (PENDING → CONFIRMED → SHIPPED)
 **Application:** `PlaceOrderUseCase` — validates cart, creates order, clears cart
@@ -565,19 +586,6 @@ When a slice says "Tests:" below, it lists both backend and frontend expectation
 - Feature flag workflow: ship to production with the feature hidden, verify in staging, enable gradually, retire the flag
 - The expand/contract migration pattern if the orders table needs adjusting after initial release
 - End-to-end order flow works with auth
-
-### Slice 6 — E2E Tests and Smoke Tests
-
-**Playwright tests:**
-- Browse catalog, view product detail
-- Log in, add to cart, go to checkout, place order
-- Verify unauthenticated users can't access protected routes
-
-**Tag 3-4 of these as `@smoke` — run them in the deploy pipeline after staging deploy, before the production approval gate.**
-
-**What you prove:**
-- Automated confidence before production promotion
-- Smoke tests are fast (under 2 minutes) and reliable
 
 ### Slice 7 — Zero-Downtime Database Migration
 
